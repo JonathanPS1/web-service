@@ -12,7 +12,7 @@ public class product {
     private String brand;
     private String deskripsi;
     private Integer quantity;
-    private double harga;
+    private float harga;
 
     public Long getId() {
         return id;
@@ -54,11 +54,11 @@ public class product {
         this.quantity = quantity;
     }
 
-    public double getHarga() {
+    public float getHarga() {
         return harga;
     }
 
-    public void setHarga(double harga) {
+    public void setHarga(float harga) {
         this.harga = harga;
     }
 }

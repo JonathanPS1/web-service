@@ -27,13 +27,13 @@ public class productController {
     private productRepository pr;
     
     //get produk
-    @GetMapping("")
+    @GetMapping("/get")
     public List<product> getAllProducts() {
         return pr.findAll();
     }
 
     //get produk by id
-    @GetMapping("/{id}")
+    @GetMapping("/getbyid/{id}")
     public ResponseEntity<product> getProductById(@PathVariable Long id) {
         Optional<product> product = pr.findById(id);
         if (product.isPresent()) {
@@ -44,13 +44,13 @@ public class productController {
     }
 
     //post produk
-    @PostMapping("/add")
+    @PostMapping("/post")
     public product createProduct(@RequestBody product product) {
         return pr.save(product);
     }
 
     //update produk
-    @PutMapping("/updateProduct/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<product> updateProduct(@PathVariable Long id, @RequestBody product productDetails) {
         Optional<product> product = pr.findById(id);
         if (product.isPresent()) {
@@ -67,7 +67,7 @@ public class productController {
     }
 
     //delete produk
-    @DeleteMapping("/deleteProduct/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         Optional<product> product = pr.findById(id);
         if (product.isPresent()) {
