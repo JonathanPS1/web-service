@@ -18,12 +18,12 @@ public class customerController {
     @Autowired
     private customerRepository cr;
 
-    @GetMapping("/getcustomer")
+    @GetMapping("")
     public @ResponseBody Iterable<customer> getAllCustomers() {
         return cr.findAll();
     }
 
-    @GetMapping("/getCustomer/{id}")
+    @GetMapping("/{id}")
     public @ResponseBody customer getCustomer(@PathVariable Long id) {
         return cr.findById(id).get();
     }
