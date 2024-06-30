@@ -5,34 +5,22 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.marketplace.product.model.product;
 import com.marketplace.product.repository.productRepository;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-
-
-@Controller
+@RestController
 @RequestMapping(path = "/product")
 public class productController {
     @Autowired
     private productRepository pr;
-    
-    //get produk
+
     @GetMapping("/get")
     public List<product> getAllProducts() {
         return pr.findAll();
     }
 
-    //get produk by id
     @GetMapping("/getbyid/{id}")
     public ResponseEntity<product> getProductById(@PathVariable Long id) {
         Optional<product> product = pr.findById(id);
@@ -43,13 +31,13 @@ public class productController {
         }
     }
 
-    //post produk
     @PostMapping("/post")
-    public product createProduct(@RequestBody product product) {
-        return pr.save(product);
+    public product createProduct(@RequestBody product p) {
+        Long newId = pr.count() + 1;
+        p.setId(newId);
+        return pr.save(p);
     }
 
-    //update produk
     @PutMapping("/update/{id}")
     public ResponseEntity<product> updateProduct(@PathVariable Long id, @RequestBody product productDetails) {
         Optional<product> product = pr.findById(id);
@@ -57,7 +45,7 @@ public class productController {
             product updatedProduct = product.get();
             updatedProduct.setNama_produk(productDetails.getNama_produk());
             updatedProduct.setBrand(productDetails.getBrand());
-            updatedProduct.setDeskripsi(productDetails.getBrand());
+            updatedProduct.setDeskripsi(productDetails.getDeskripsi());
             updatedProduct.setQuantity(productDetails.getQuantity());
             updatedProduct.setHarga(productDetails.getHarga());
             return ResponseEntity.ok(pr.save(updatedProduct));
@@ -66,16 +54,14 @@ public class productController {
         }
     }
 
-    //delete produk
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         Optional<product> product = pr.findById(id);
         if (product.isPresent()) {
             pr.delete(product.get());
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("Product with ID " + id + " berhasil dihapus");
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-    
 }

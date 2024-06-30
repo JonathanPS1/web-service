@@ -7,5 +7,4 @@ import com.marketplace.product.model.product;
 
 @Repository
 public interface productRepository extends JpaRepository<product, Long> {
-
 }

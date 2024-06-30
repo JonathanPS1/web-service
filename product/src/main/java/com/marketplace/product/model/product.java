@@ -14,6 +14,7 @@ public class product {
     private Integer quantity;
     private float harga;
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
