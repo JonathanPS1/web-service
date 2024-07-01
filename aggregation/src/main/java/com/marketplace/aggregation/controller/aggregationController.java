@@ -281,7 +281,7 @@ public class aggregationController {
     }
 
     // Endpoint untuk menambah cart
-    @PostMapping("/cart/add-cart")
+    @PostMapping("/cart/addCart")
     public ResponseEntity<Object> addCart(@RequestBody Cart cart, @RequestParam double hargaBarang) {
         try {
             ResponseEntity<Object> response = restTemplate.postForEntity(orderServiceUrl + "/add-cart?hargaBarang={hargaBarang}", cart, Object.class, hargaBarang);
@@ -296,7 +296,7 @@ public class aggregationController {
     }
 
     // Endpoint untuk mengupdate cart berdasarkan kodeKeranjang
-    @PutMapping("/cart/update-cart/{kodeKeranjang}")
+    @PutMapping("/cart/updateCart/{kodeKeranjang}")
     public ResponseEntity<Object> updateCart(@PathVariable String kodeKeranjang, @RequestBody Cart cart, @RequestParam double hargaBarang) {
         try {
             ResponseEntity<Object> response = restTemplate.exchange(
@@ -317,7 +317,7 @@ public class aggregationController {
     }
 
     // Endpoint untuk menghapus cart berdasarkan kodeKeranjang
-    @DeleteMapping("/cart/delete-cart/{kodeKeranjang}")
+    @DeleteMapping("/cart/deleteCart/{kodeKeranjang}")
     public ResponseEntity<Object> deleteCart(@PathVariable String kodeKeranjang) {
         try {
             ResponseEntity<Boolean> response = restTemplate.exchange(
