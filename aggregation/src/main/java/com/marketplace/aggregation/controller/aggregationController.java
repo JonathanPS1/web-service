@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -312,47 +313,43 @@ public class aggregationController {
     }
 
 
-    @PutMapping("/cart/updateCart/{kodeKeranjang}")
-    public ResponseEntity<Object> updateCart(@PathVariable String kodeKeranjang, @RequestBody Cart cart) {
-        try {
-            // Validasi apakah produk dengan kode yang diberikan tersedia
-            ResponseEntity<Product> productResponse = restTemplate.getForEntity(productServiceUrl + "/product/{id}",
-                    Product.class, cart.getKodeProduk());
-            if (productResponse.getStatusCode() != HttpStatus.OK) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Produk dengan kode " + cart.getKodeProduk() + " tidak ditemukan");
-            }
-
-            // Mengambil harga produk dari respons layanan produk
-            double hargaProduk = productResponse.getBody().getHarga();
-
-            // Lanjutkan dengan operasi update cart
-            ResponseEntity<Object> response = restTemplate.exchange(
-                    orderServiceUrl + "/updateCart/{kodeKeranjang}?hargaProduk={hargaProduk}",
-                    HttpMethod.PUT,
-                    null,
-                    Object.class,
-                    kodeKeranjang, hargaProduk);
-
-            if (response.getStatusCode() == HttpStatus.OK) {
-                return ResponseEntity.ok("Cart berhasil diupdate");
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal mengupdate cart");
-            }
-        } catch (HttpClientErrorException.NotFound ex) {
+    @PutMapping("/cart/updateCart/{id}")
+public ResponseEntity<Object> updateCart(@PathVariable String id, @RequestBody Cart cart) {
+    try {
+        // Validasi apakah produk dengan kode yang diberikan tersedia
+        ResponseEntity<Product> productResponse = restTemplate.getForEntity(productServiceUrl + "/" + cart.getKodeProduk(), Product.class);
+        if (productResponse.getStatusCode() != HttpStatus.OK || productResponse.getBody() == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Produk dengan kode " + cart.getKodeProduk() + " tidak ditemukan");
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
         }
+
+        // Mengambil harga produk dari respons layanan produk
+        double hargaProduk = productResponse.getBody().getHarga();
+        cart.setHargaBarang(hargaProduk);
+
+        // Membuat HttpEntity dengan body request
+        HttpEntity<Cart> requestEntity = new HttpEntity<>(cart);
+
+        // Lanjutkan dengan operasi update cart
+        ResponseEntity<Object> response = restTemplate.exchange(orderServiceUrl + "/cart/updateCart/{id}", HttpMethod.PUT, requestEntity, Object.class, id);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return ResponseEntity.ok("Cart berhasil diupdate");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal mengupdate cart");
+        }
+    } catch (Exception ex) {
+        System.out.println(ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
     }
+}
+
 
     // Endpoint untuk menghapus cart berdasarkan kodeKeranjang
     @DeleteMapping("/cart/deleteCart/{kodeKeranjang}")
     public ResponseEntity<Object> deleteCart(@PathVariable String kodeKeranjang) {
         try {
             ResponseEntity<Boolean> response = restTemplate.exchange(
-                    orderServiceUrl + "/deleteCart/{kodeKeranjang}",
+                    orderServiceUrl + "/cart/deleteCart/{kodeKeranjang}",
                     HttpMethod.DELETE,
                     null,
                     Boolean.class,
@@ -364,6 +361,7 @@ public class aggregationController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal menghapus cart");
             }
         } catch (Exception ex) {
+            System.out.println(ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
         }
     }

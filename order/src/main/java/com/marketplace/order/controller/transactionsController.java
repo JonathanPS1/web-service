@@ -166,27 +166,25 @@ public class transactionsController {
         }
     }
 
-    @PutMapping("/cart/updateCart/{kodeKeranjang}")
-    public @ResponseBody Boolean updateCart(@PathVariable String kodeKeranjang, @RequestBody cart newData,
-            @RequestParam double hargaBarang) {
-        if (cr.existsByKodeKeranjang(kodeKeranjang)) {
-            cart oldData = cr.findByKodeKeranjang(kodeKeranjang).getFirst();
-            if (oldData.isStatus() == false) {
-                oldData.setKodeKeranjang(kodeKeranjang);
-                oldData.setKodeProduk(newData.getKodeProduk());
-                oldData.setJumlahBarang(newData.getJumlahBarang());
-                oldData.setSubtotal(hargaBarang * newData.getJumlahBarang());
-                oldData.setStatus(false);
+    @PutMapping("/cart/updateCart/{id}")
+public @ResponseBody Boolean updateCart(@PathVariable String id, @RequestBody cart newData) {
+    if (cr.existsById(id)) {
+        cart oldData = cr.findById(id).orElse(null);
+        if (oldData != null && !oldData.isStatus()) {
+            oldData.setKodeProduk(newData.getKodeProduk());
+            oldData.setJumlahBarang(newData.getJumlahBarang());
+            oldData.setSubtotal(newData.getHargaBarang() * newData.getJumlahBarang());
+            oldData.setStatus(false);
 
-                cr.save(oldData);
-                return true;
-            } else {
-                return false;
-            }
+            cr.save(oldData);
+            return true;
         } else {
             return false;
         }
+    } else {
+        return false;
     }
+}
 
     @DeleteMapping("/cart/deleteCart/{kodeKeranjang}")
     public @ResponseBody Boolean deleteCart(@PathVariable String kodeKeranjang) {
