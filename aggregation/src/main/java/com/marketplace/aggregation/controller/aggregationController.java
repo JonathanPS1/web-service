@@ -16,13 +16,18 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/aggregation")
 public class aggregationController {
+
+    private final String customerServiceUrl = "http://localhost:8081/customer/{customerId}";
+    private final String productServiceUrl = "http://localhost:8082/product/{productId}";
+    private final String orderServiceUrl = "http://localhost:8083/order/{orderId}";
+
     @Autowired
     private RestTemplate restTemplate;
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<Object> getCustomerDetails(@PathVariable String customerId) {
         try {
-            Customer customer = restTemplate.getForObject("http://localhost:8081/customer/{customerId}", Customer.class, customerId);
+            Customer customer = restTemplate.getForObject(customerServiceUrl, Customer.class, customerId);
             if (customer != null) {
                 return ResponseEntity.ok(customer);
             } else {
@@ -38,7 +43,7 @@ public class aggregationController {
     @GetMapping("/product/{productId}")
     public ResponseEntity<Object> getProductDetails(@PathVariable String productId) {
         try {
-            Product product = restTemplate.getForObject("http://localhost:8082/product/{productId}", Product.class, productId);
+            Product product = restTemplate.getForObject(productServiceUrl, Product.class, productId);
             if (product != null) {
                 return ResponseEntity.ok(product);
             } else {
@@ -54,7 +59,7 @@ public class aggregationController {
     @GetMapping("/order/{orderId}")
     public ResponseEntity<Object> getOrderDetails(@PathVariable String orderId) {
         try {
-            Order order = restTemplate.getForObject("http://localhost:8083/order/{orderId}", Order.class, orderId);
+            Order order = restTemplate.getForObject(orderServiceUrl, Order.class, orderId);
             if (order != null) {
                 return ResponseEntity.ok(order);
             } else {
