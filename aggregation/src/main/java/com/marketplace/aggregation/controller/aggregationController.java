@@ -141,7 +141,7 @@ public class aggregationController {
     @PostMapping("/product/addProduct")
     public ResponseEntity<String> addProduct(@RequestBody Product product) {
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(productServiceUrl + "/add", product, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(productServiceUrl + "/addProduct", product, String.class);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.ok("Product berhasil ditambahkan");
             } else {
@@ -182,7 +182,7 @@ public class aggregationController {
      @GetMapping("/order")
      public ResponseEntity<Object> getAllOrders() {
          try {
-             ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/orders", Object.class);
+             ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/order", Object.class);
              if (response.getStatusCode() == HttpStatus.OK) {
                  return ResponseEntity.ok(response.getBody());
              } else {
@@ -215,7 +215,7 @@ public class aggregationController {
     @PostMapping("/order/addOrder")
     public ResponseEntity<Object> addOrder(@RequestBody Order order) {
         try {
-            ResponseEntity<Object> response = restTemplate.postForEntity(orderServiceUrl + "/add-order", order, Object.class);
+            ResponseEntity<Object> response = restTemplate.postForEntity(orderServiceUrl + "/addOrder", order, Object.class);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.ok("Order berhasil ditambahkan");
             } else {
@@ -231,7 +231,7 @@ public class aggregationController {
     public ResponseEntity<Object> deleteOrder(@PathVariable String kodeTransaksi) {
         try {
             ResponseEntity<Boolean> response = restTemplate.exchange(
-                    orderServiceUrl + "/delete-order/{kodeTransaksi}",
+                    orderServiceUrl + "/deleteOrder/{kodeTransaksi}",
                     HttpMethod.DELETE,
                     null,
                     Boolean.class,
@@ -250,7 +250,7 @@ public class aggregationController {
     @GetMapping("/cart")
     public ResponseEntity<Object> getAllCarts() {
         try {
-            ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/carts", Object.class);
+            ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/cart", Object.class);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.ok(response.getBody());
             } else {
@@ -284,7 +284,7 @@ public class aggregationController {
     @PostMapping("/cart/addCart")
     public ResponseEntity<Object> addCart(@RequestBody Cart cart, @RequestParam double hargaBarang) {
         try {
-            ResponseEntity<Object> response = restTemplate.postForEntity(orderServiceUrl + "/add-cart?hargaBarang={hargaBarang}", cart, Object.class, hargaBarang);
+            ResponseEntity<Object> response = restTemplate.postForEntity(orderServiceUrl + "/addCart?hargaBarang={hargaBarang}", cart, Object.class, hargaBarang);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.ok("Cart berhasil ditambahkan");
             } else {
@@ -300,7 +300,7 @@ public class aggregationController {
     public ResponseEntity<Object> updateCart(@PathVariable String kodeKeranjang, @RequestBody Cart cart, @RequestParam double hargaBarang) {
         try {
             ResponseEntity<Object> response = restTemplate.exchange(
-                    orderServiceUrl + "/update-cart/{kodeKeranjang}?hargaBarang={hargaBarang}",
+                    orderServiceUrl + "/updateCart/{kodeKeranjang}?hargaBarang={hargaBarang}",
                     HttpMethod.PUT,
                     null,
                     Object.class,
@@ -321,7 +321,7 @@ public class aggregationController {
     public ResponseEntity<Object> deleteCart(@PathVariable String kodeKeranjang) {
         try {
             ResponseEntity<Boolean> response = restTemplate.exchange(
-                    orderServiceUrl + "/delete-cart/{kodeKeranjang}",
+                    orderServiceUrl + "/deleteCart/{kodeKeranjang}",
                     HttpMethod.DELETE,
                     null,
                     Boolean.class,
