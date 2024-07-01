@@ -242,7 +242,7 @@ public class aggregationController {
     public ResponseEntity<Object> deleteOrder(@PathVariable String kodeTransaksi) {
         try {
             ResponseEntity<Boolean> response = restTemplate.exchange(
-                    orderServiceUrl + "/deleteOrder/{kodeTransaksi}",
+                    orderServiceUrl + "/order/deleteOrder/{kodeTransaksi}",
                     HttpMethod.DELETE,
                     null,
                     Boolean.class,
