@@ -7,7 +7,6 @@ import com.marketplace.aggregation.dto.Product;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -25,8 +24,6 @@ public class aggregationController {
     private final String customerServiceUrl = "http://localhost:8081/customer";
     private final String productServiceUrl = "http://localhost:8082/product";
     private final String orderServiceUrl = "http://localhost:8083/transactions";
-
-    private static final Logger LOGGER = Logger.getLogger(aggregationController.class.getName());
 
 
     @Autowired
