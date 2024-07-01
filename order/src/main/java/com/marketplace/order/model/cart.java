@@ -9,6 +9,16 @@ public class cart {
     private String kodeKeranjang;
     private String kodeProduk;
     private Integer jumlahBarang;
+    private double hargaBarang;
+    
+    public double getHargaBarang() {
+        return hargaBarang;
+    }
+
+    public void setHargaBarang(double hargaBarang) {
+        this.hargaBarang = hargaBarang;
+    }
+
     private double subtotal;
     private boolean status; // kalau buka url order, status berubah jadi true (total didapat dari loop
                             // status false)

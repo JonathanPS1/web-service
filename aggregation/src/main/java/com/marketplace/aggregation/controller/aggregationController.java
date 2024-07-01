@@ -286,36 +286,34 @@ public class aggregationController {
 
     // Endpoint untuk menambah cart
     @PostMapping("/cart/addCart")
-    public ResponseEntity<Object> addCart(@RequestBody Cart cart, @RequestParam double hargaBarang) {
+    public ResponseEntity<Object> addCart(@RequestBody Cart cart) {
         try {
-            // Validasi apakah produk dengan kode yang diberikan tersedia
-            ResponseEntity<Product> productResponse = restTemplate.getForEntity(productServiceUrl + "/product/{id}",
-                    Product.class, cart.getKodeProduk());
-            if (productResponse.getStatusCode() != HttpStatus.OK) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Produk dengan kode " + cart.getKodeProduk() + " tidak ditemukan");
+            // Check if product exists and get product details
+            String productUrl = productServiceUrl + "/" + cart.getKodeProduk();
+            ResponseEntity<Product> productResponse = restTemplate.getForEntity(productUrl, Product.class);
+            if (!productResponse.getStatusCode().is2xxSuccessful() || productResponse.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produk dengan kode " + cart.getKodeProduk() + " tidak ditemukan");
             }
 
-            // Lanjutkan dengan operasi tambah cart jika produk ditemukan
-            ResponseEntity<Object> response = restTemplate.postForEntity(
-                    orderServiceUrl + "/addCart?hargaBarang={hargaBarang}", cart, Object.class, hargaBarang);
+            // Get product price
+            double hargaBarang = productResponse.getBody().getHarga();
+            cart.setHargaBarang(hargaBarang);
+
+            // Continue with adding cart logic
+            ResponseEntity<Object> response = restTemplate.postForEntity(orderServiceUrl + "/cart/addCart", cart, Object.class);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.ok("Cart berhasil ditambahkan");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal menambahkan cart");
             }
-        } catch (HttpClientErrorException.NotFound ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Produk dengan kode " + cart.getKodeProduk() + " tidak ditemukan");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
         }
     }
 
-    // Endpoint untuk mengupdate cart berdasarkan kodeKeranjang
+
     @PutMapping("/cart/updateCart/{kodeKeranjang}")
-    public ResponseEntity<Object> updateCart(@PathVariable String kodeKeranjang, @RequestBody Cart cart,
-            @RequestParam double hargaBarang) {
+    public ResponseEntity<Object> updateCart(@PathVariable String kodeKeranjang, @RequestBody Cart cart) {
         try {
             // Validasi apakah produk dengan kode yang diberikan tersedia
             ResponseEntity<Product> productResponse = restTemplate.getForEntity(productServiceUrl + "/product/{id}",
@@ -325,13 +323,16 @@ public class aggregationController {
                         .body("Produk dengan kode " + cart.getKodeProduk() + " tidak ditemukan");
             }
 
-            // Lanjutkan dengan operasi update cart jika produk ditemukan
+            // Mengambil harga produk dari respons layanan produk
+            double hargaProduk = productResponse.getBody().getHarga();
+
+            // Lanjutkan dengan operasi update cart
             ResponseEntity<Object> response = restTemplate.exchange(
-                    orderServiceUrl + "/updateCart/{kodeKeranjang}?hargaBarang={hargaBarang}",
+                    orderServiceUrl + "/updateCart/{kodeKeranjang}?hargaProduk={hargaProduk}",
                     HttpMethod.PUT,
                     null,
                     Object.class,
-                    kodeKeranjang, hargaBarang);
+                    kodeKeranjang, hargaProduk);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.ok("Cart berhasil diupdate");

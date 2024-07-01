@@ -144,7 +144,7 @@ public class transactionsController {
     }
 
     @PostMapping("/cart/addCart")
-    public @ResponseBody ResponseEntity<Object> addCart(@RequestBody cart c, @RequestParam double hargaBarang) {
+    public @ResponseBody ResponseEntity<Object> addCart(@RequestBody cart c) {
         try {
             if (cr.existsByKodeKeranjang(c.getKodeKeranjang())) {
                 List<cart> carts = cr.findByKodeKeranjang(c.getKodeKeranjang());
@@ -157,7 +157,7 @@ public class transactionsController {
                     }
                 }
             }
-            c.setSubtotal(c.getJumlahBarang() * hargaBarang);
+            c.setSubtotal(c.getJumlahBarang() * c.getHargaBarang());
             c.setStatus(false);
             cr.insert(c);
             return ResponseEntity.status(200).body(true);

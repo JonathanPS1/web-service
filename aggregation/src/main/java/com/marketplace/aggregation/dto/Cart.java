@@ -9,6 +9,16 @@ public class Cart {
     private boolean status;
     private Product productDetails;
     
+    private double hargaBarang;
+    
+    public double getHargaBarang() {
+        return hargaBarang;
+    }
+
+    public void setHargaBarang(double hargaBarang) {
+        this.hargaBarang = hargaBarang;
+    }
+
     public String getId() {
         return id;
     }
