@@ -6,10 +6,7 @@ import com.marketplace.aggregation.dto.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,17 +14,18 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/aggregation")
 public class aggregationController {
 
-    private final String customerServiceUrl = "http://localhost:8081/customer/{customerId}";
+    private final String customerServiceUrl = "http://localhost:8081/customer";
     private final String productServiceUrl = "http://localhost:8082/product/{productId}";
     private final String orderServiceUrl = "http://localhost:8083/order/{orderId}";
 
     @Autowired
     private RestTemplate restTemplate;
 
+    // Endpoint untuk mendapatkan detail customer berdasarkan ID
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<Object> getCustomerDetails(@PathVariable String customerId) {
         try {
-            Customer customer = restTemplate.getForObject(customerServiceUrl, Customer.class, customerId);
+            Customer customer = restTemplate.getForObject(customerServiceUrl + "/{customerId}", Customer.class, customerId);
             if (customer != null) {
                 return ResponseEntity.ok(customer);
             } else {
@@ -40,6 +38,48 @@ public class aggregationController {
         }
     }
 
+    // Endpoint untuk menambah customer
+    @PostMapping("/customer/addCustomer")
+    public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(customerServiceUrl + "/addCustomer", customer, String.class);
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return ResponseEntity.ok("Customer berhasil ditambahkan");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal menambahkan customer");
+            }
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+        }
+    }
+
+    // Endpoint untuk mengupdate customer berdasarkan ID
+    @PutMapping("/customer/updateCustomer/{customerId}")
+    public ResponseEntity<String> updateCustomer(@PathVariable String customerId, @RequestBody Customer customer) {
+        try {
+            restTemplate.put(customerServiceUrl + "/updateCustomer/{customerId}", customer, customerId);
+            return ResponseEntity.ok("Customer berhasil diperbarui");
+        } catch (HttpClientErrorException.NotFound ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Customer Tidak Ditemukan");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+        }
+    }
+
+    // Endpoint untuk menghapus customer berdasarkan ID
+    @DeleteMapping("/customer/deleteCustomer/{customerId}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable String customerId) {
+        try {
+            restTemplate.delete(customerServiceUrl + "/deleteCustomer/{customerId}", customerId);
+            return ResponseEntity.ok("Customer berhasil dihapus");
+        } catch (HttpClientErrorException.NotFound ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Customer Tidak Ditemukan");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+        }
+    }
+
+    // Endpoint untuk mendapatkan detail product berdasarkan ID
     @GetMapping("/product/{productId}")
     public ResponseEntity<Object> getProductDetails(@PathVariable String productId) {
         try {
@@ -56,6 +96,7 @@ public class aggregationController {
         }
     }
 
+    // Endpoint untuk mendapatkan detail order berdasarkan ID
     @GetMapping("/order/{orderId}")
     public ResponseEntity<Object> getOrderDetails(@PathVariable String orderId) {
         try {
