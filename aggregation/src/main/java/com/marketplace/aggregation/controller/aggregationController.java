@@ -247,7 +247,7 @@ public class aggregationController {
         }
     }
 
-    @GetMapping("/carts")
+    @GetMapping("/cart")
     public ResponseEntity<Object> getAllCarts() {
         try {
             ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/carts", Object.class);

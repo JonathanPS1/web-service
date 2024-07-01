@@ -51,7 +51,7 @@ public class transactionsController {
         }
     }
 
-    @PostMapping("/addOrder")
+    @PostMapping("/order/addOrder")
     public @ResponseBody ResponseEntity<Object> addOrder(@RequestBody order o) {
         if (or.existsByKodeTransaksi(o.getKodeTransaksi())) {
             return ResponseEntity.status(400).body("Transaksi sudah selesai");
@@ -97,7 +97,7 @@ public class transactionsController {
         }
     }
 
-    @DeleteMapping("/deleteOrder/{kodeTransaksi}")
+    @DeleteMapping("/order/deleteOrder/{kodeTransaksi}")
     public @ResponseBody boolean deleteOrder(@PathVariable String kodeTransaksi) {
         if (or.existsByKodeTransaksi(kodeTransaksi)) {
             or.deleteByKodeTransaksi(kodeTransaksi);
@@ -143,7 +143,7 @@ public class transactionsController {
         }
     }
 
-    @PostMapping("/addCart")
+    @PostMapping("/cart/addCart")
     public @ResponseBody ResponseEntity<Object> addCart(@RequestBody cart c, @RequestParam double hargaBarang) {
         try {
             if (cr.existsByKodeKeranjang(c.getKodeKeranjang())) {
@@ -166,7 +166,7 @@ public class transactionsController {
         }
     }
 
-    @PutMapping("/updateCart/{kodeKeranjang}")
+    @PutMapping("/cart/updateCart/{kodeKeranjang}")
     public @ResponseBody Boolean updateCart(@PathVariable String kodeKeranjang, @RequestBody cart newData,
             @RequestParam double hargaBarang) {
         if (cr.existsByKodeKeranjang(kodeKeranjang)) {
@@ -188,7 +188,7 @@ public class transactionsController {
         }
     }
 
-    @DeleteMapping("deleteCart/{kodeKeranjang}")
+    @DeleteMapping("/cart/deleteCart/{kodeKeranjang}")
     public @ResponseBody Boolean deleteCart(@PathVariable String kodeKeranjang) {
         if (cr.existsByKodeKeranjang(kodeKeranjang)) {
             cr.deleteByKodeKeranjang(kodeKeranjang);
