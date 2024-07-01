@@ -1,5 +1,7 @@
 package com.marketplace.order.model;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 
 public class order {
@@ -7,11 +9,10 @@ public class order {
     private String id;
 
     private String kodeTransaksi;
+    private String kodeCustomer;
+    private String kodeKeranjang; // Ambil cart
     private String tanggalPembelian;
-    private String kodePelanggan;
-    private String kodeBarang;
-    private Integer jumlahBarang;
-    // private Double subtotal;
+    private List<cart> detailCart;
     private Double total;
     private Double pembayaran;
     private Double kembalian;
@@ -32,6 +33,14 @@ public class order {
         this.kodeTransaksi = kodeTransaksi;
     }
 
+    public String getKodeCustomer() {
+        return kodeCustomer;
+    }
+
+    public void setKodeCustomer(String kodeCustomer) {
+        this.kodeCustomer = kodeCustomer;
+    }
+
     public String getTanggalPembelian() {
         return tanggalPembelian;
     }
@@ -40,28 +49,12 @@ public class order {
         this.tanggalPembelian = tanggalPembelian;
     }
 
-    public String getKodePelanggan() {
-        return kodePelanggan;
+    public List<cart> getDetailCart() {
+        return detailCart;
     }
 
-    public void setKodePelanggan(String kodePelanggan) {
-        this.kodePelanggan = kodePelanggan;
-    }
-
-    public String getKodeBarang() {
-        return kodeBarang;
-    }
-
-    public void setKodeBarang(String kodeBarang) {
-        this.kodeBarang = kodeBarang;
-    }
-
-    public Integer getJumlahBarang() {
-        return jumlahBarang;
-    }
-
-    public void setJumlahBarang(Integer jumlahBarang) {
-        this.jumlahBarang = jumlahBarang;
+    public void setDetailCart(List<cart> detailCart) {
+        this.detailCart = detailCart;
     }
 
     public Double getTotal() {
@@ -86,5 +79,13 @@ public class order {
 
     public void setKembalian(Double kembalian) {
         this.kembalian = kembalian;
+    }
+
+    public String getKodeKeranjang() {
+        return kodeKeranjang;
+    }
+
+    public void setKodeKeranjang(String kodeKeranjang) {
+        this.kodeKeranjang = kodeKeranjang;
     }
 }
