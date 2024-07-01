@@ -195,4 +195,14 @@ public @ResponseBody Boolean updateCart(@PathVariable String id, @RequestBody ca
             return false;
         }
     }
+
+    @DeleteMapping("/cart/deleteItem/{id}")
+    public @ResponseBody Boolean deleteCartbyId(@PathVariable String id) {
+        if (cr.existsById(id)) {
+            cr.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

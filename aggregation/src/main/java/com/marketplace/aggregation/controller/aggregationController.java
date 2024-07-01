@@ -7,6 +7,7 @@ import com.marketplace.aggregation.dto.Product;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -24,6 +25,9 @@ public class aggregationController {
     private final String customerServiceUrl = "http://localhost:8081/customer";
     private final String productServiceUrl = "http://localhost:8082/product";
     private final String orderServiceUrl = "http://localhost:8083/transactions";
+
+    private static final Logger LOGGER = Logger.getLogger(aggregationController.class.getName());
+
 
     @Autowired
     private RestTemplate restTemplate;
@@ -197,34 +201,40 @@ public class aggregationController {
         }
     }
 
-    // Endpoint untuk mendapatkan detail order berdasarkan ID
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<Object> getOrderDetails(@PathVariable String orderId) {
-        try {
-            Order order = restTemplate.getForObject(orderServiceUrl + "/{orderId}", Order.class, orderId);
-            if (order != null) {
-                return ResponseEntity.ok(order);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Order Tidak Ditemukan");
-            }
-        } catch (HttpClientErrorException.NotFound ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Order Tidak Ditemukan");
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
-        }
-    }
-
-    // Endpoint untuk menambah order
     @PostMapping("/order/addOrder")
-    public ResponseEntity<Object> addOrder(@RequestBody Order order) {
+    public ResponseEntity<String> addOrder(@RequestBody Order order) {
         try {
-            ResponseEntity<Object> response = restTemplate.postForEntity(orderServiceUrl + "/addOrder", order,
-                    Object.class);
+            // Periksa keberadaan customer
+            ResponseEntity<Customer> customerResponse = restTemplate.getForEntity(customerServiceUrl + "/" + order.getKodeCustomer(), Customer.class);
+            if (customerResponse.getStatusCode() != HttpStatus.OK || customerResponse.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Customer dengan kode tersebut tidak ditemukan");
+            }
+            ResponseEntity<String> response = restTemplate.postForEntity(orderServiceUrl + "/order/addOrder", order, String.class);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.ok("Order berhasil ditambahkan");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal menambahkan order");
             }
+        } catch (HttpClientErrorException.NotFound ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Customer dengan kode tersebut tidak ditemukan");
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+        }
+    }
+
+    @PutMapping("/order/updateOrder/{orderId}")
+    public ResponseEntity<String> updateOrder(@PathVariable String orderId, @RequestBody Order order) {
+        try {
+            // Periksa keberadaan customer
+            ResponseEntity<Customer> customerResponse = restTemplate.getForEntity(customerServiceUrl + "/" + order.getKodeCustomer(), Customer.class);
+            if (customerResponse.getStatusCode() != HttpStatus.OK || customerResponse.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Customer dengan kode tersebut tidak ditemukan");
+            }
+            restTemplate.put(orderServiceUrl + "/order/updateOrder/{orderId}", order, orderId);
+            return ResponseEntity.ok("Order berhasil diperbarui");
+        } catch (HttpClientErrorException.NotFound ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Customer dengan kode tersebut tidak ditemukan");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
         }
@@ -359,6 +369,28 @@ public ResponseEntity<Object> updateCart(@PathVariable String id, @RequestBody C
                 return ResponseEntity.ok("Cart berhasil dihapus");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal menghapus cart");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+        }
+    }
+
+    // Endpoint untuk menghapus cart berdasarkan kodeKeranjang
+    @DeleteMapping("/cart/deleteItem/{id}")
+    public ResponseEntity<Object> deleteItem(@PathVariable String id) {
+        try {
+            ResponseEntity<Boolean> response = restTemplate.exchange(
+                    orderServiceUrl + "/cart/deleteItem/{id}",
+                    HttpMethod.DELETE,
+                    null,
+                    Boolean.class,
+                    id);
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody()) {
+                return ResponseEntity.ok("Item berhasil dihapus");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal menghapus Item");
             }
         } catch (Exception ex) {
             System.out.println(ex);

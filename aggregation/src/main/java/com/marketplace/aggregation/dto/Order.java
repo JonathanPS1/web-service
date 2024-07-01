@@ -5,7 +5,7 @@ import java.util.List;
 public class Order {
     private String id;
     private String kodeTransaksi;
-    private String kodeCustomer;
+    private Long kodeCustomer;
     private String kodeKeranjang;
     private String tanggalPembelian;
     private List<Cart> detailCart;
@@ -25,10 +25,10 @@ public class Order {
     public void setKodeTransaksi(String kodeTransaksi) {
         this.kodeTransaksi = kodeTransaksi;
     }
-    public String getKodeCustomer() {
+    public Long getKodeCustomer() {
         return kodeCustomer;
     }
-    public void setKodeCustomer(String kodeCustomer) {
+    public void setKodeCustomer(Long kodeCustomer) {
         this.kodeCustomer = kodeCustomer;
     }
     public String getKodeKeranjang() {
