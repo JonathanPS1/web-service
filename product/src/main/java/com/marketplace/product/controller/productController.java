@@ -31,7 +31,7 @@ public class productController {
         }
     }
 
-    @PostMapping("/add")
+    @PostMapping("/addProduct")
     public product createProduct(@RequestBody product p) {
         Long newId = pr.count() + 1;
         p.setId(newId);
