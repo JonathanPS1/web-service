@@ -31,7 +31,7 @@ public class transactionsController {
     @Autowired
     private cartRepository cr;
 
-    @GetMapping("/orders")
+    @GetMapping("/order")
     public @ResponseBody ResponseEntity<Object> getAllOrders() {
         Iterable<order> orders = or.findAll();
         if (!orders.iterator().hasNext()) {
@@ -51,7 +51,7 @@ public class transactionsController {
         }
     }
 
-    @PostMapping("/add-order")
+    @PostMapping("/addOrder")
     public @ResponseBody ResponseEntity<Object> addOrder(@RequestBody order o) {
         if (or.existsByKodeTransaksi(o.getKodeTransaksi())) {
             return ResponseEntity.status(400).body("Transaksi sudah selesai");
@@ -97,7 +97,7 @@ public class transactionsController {
         }
     }
 
-    @DeleteMapping("/delete-order/{kodeTransaksi}")
+    @DeleteMapping("/deleteOrder/{kodeTransaksi}")
     public @ResponseBody boolean deleteOrder(@PathVariable String kodeTransaksi) {
         if (or.existsByKodeTransaksi(kodeTransaksi)) {
             or.deleteByKodeTransaksi(kodeTransaksi);
@@ -123,7 +123,7 @@ public class transactionsController {
     // O - - - -O O O O- O- -O- - - -O
     // O O O O--O- - -O- O- - O - - -O
 
-    @GetMapping("/carts")
+    @GetMapping("/cart")
     public @ResponseBody ResponseEntity<Object> getAllCarts() {
         Iterable<cart> carts = cr.findAll();
         if (!carts.iterator().hasNext()) {
@@ -143,7 +143,7 @@ public class transactionsController {
         }
     }
 
-    @PostMapping("/add-cart")
+    @PostMapping("/addCart")
     public @ResponseBody ResponseEntity<Object> addCart(@RequestBody cart c, @RequestParam double hargaBarang) {
         try {
             if (cr.existsByKodeKeranjang(c.getKodeKeranjang())) {
@@ -166,7 +166,7 @@ public class transactionsController {
         }
     }
 
-    @PutMapping("/update-cart/{kodeKeranjang}")
+    @PutMapping("/updateCart/{kodeKeranjang}")
     public @ResponseBody Boolean updateCart(@PathVariable String kodeKeranjang, @RequestBody cart newData,
             @RequestParam double hargaBarang) {
         if (cr.existsByKodeKeranjang(kodeKeranjang)) {
@@ -188,7 +188,7 @@ public class transactionsController {
         }
     }
 
-    @DeleteMapping("delete-cart/{kodeKeranjang}")
+    @DeleteMapping("deleteCart/{kodeKeranjang}")
     public @ResponseBody Boolean deleteCart(@PathVariable String kodeKeranjang) {
         if (cr.existsByKodeKeranjang(kodeKeranjang)) {
             cr.deleteByKodeKeranjang(kodeKeranjang);

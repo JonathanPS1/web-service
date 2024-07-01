@@ -178,6 +178,21 @@ public class aggregationController {
         }
     }
 
+     // Endpoint untuk mendapatkan semua orders
+     @GetMapping("/order")
+     public ResponseEntity<Object> getAllOrders() {
+         try {
+             ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/orders", Object.class);
+             if (response.getStatusCode() == HttpStatus.OK) {
+                 return ResponseEntity.ok(response.getBody());
+             } else {
+                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal mengambil data orders");
+             }
+         } catch (Exception ex) {
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+         }
+     }
+
     // Endpoint untuk mendapatkan detail order berdasarkan ID
     @GetMapping("/order/{orderId}")
     public ResponseEntity<Object> getOrderDetails(@PathVariable String orderId) {
@@ -195,23 +210,9 @@ public class aggregationController {
         }
     }
 
-    // Endpoint untuk mendapatkan semua orders
-    @GetMapping("/orders")
-    public ResponseEntity<Object> getAllOrders() {
-        try {
-            ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/orders", Object.class);
-            if (response.getStatusCode() == HttpStatus.OK) {
-                return ResponseEntity.ok(response.getBody());
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal mengambil data orders");
-            }
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
-        }
-    }
 
     // Endpoint untuk menambah order
-    @PostMapping("/order/add-order")
+    @PostMapping("/order/addOrder")
     public ResponseEntity<Object> addOrder(@RequestBody Order order) {
         try {
             ResponseEntity<Object> response = restTemplate.postForEntity(orderServiceUrl + "/add-order", order, Object.class);
@@ -226,7 +227,7 @@ public class aggregationController {
     }
 
     // Endpoint untuk menghapus order berdasarkan kodeTransaksi
-    @DeleteMapping("/order/delete-order/{kodeTransaksi}")
+    @DeleteMapping("/order/deleteOrder/{kodeTransaksi}")
     public ResponseEntity<Object> deleteOrder(@PathVariable String kodeTransaksi) {
         try {
             ResponseEntity<Boolean> response = restTemplate.exchange(
