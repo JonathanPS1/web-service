@@ -16,12 +16,12 @@ public class productController {
     @Autowired
     private productRepository pr;
 
-    @GetMapping("/get")
+    @GetMapping("")
     public List<product> getAllProducts() {
         return pr.findAll();
     }
 
-    @GetMapping("/getbyid/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<product> getProductById(@PathVariable Long id) {
         Optional<product> product = pr.findById(id);
         if (product.isPresent()) {
@@ -31,14 +31,14 @@ public class productController {
         }
     }
 
-    @PostMapping("/post")
+    @PostMapping("/add")
     public product createProduct(@RequestBody product p) {
         Long newId = pr.count() + 1;
         p.setId(newId);
         return pr.save(p);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/updateProduct/{id}")
     public ResponseEntity<product> updateProduct(@PathVariable Long id, @RequestBody product productDetails) {
         Optional<product> product = pr.findById(id);
         if (product.isPresent()) {
@@ -54,7 +54,7 @@ public class productController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteProduct/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         Optional<product> product = pr.findById(id);
         if (product.isPresent()) {
