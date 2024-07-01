@@ -7,21 +7,12 @@ public class cart {
     private String id;
 
     private String kodeKeranjang;
-    private String kodeProduk;
+    private Long kodeProduk;
     private Integer jumlahBarang;
     private double hargaBarang;
-    
-    public double getHargaBarang() {
-        return hargaBarang;
-    }
-
-    public void setHargaBarang(double hargaBarang) {
-        this.hargaBarang = hargaBarang;
-    }
-
     private double subtotal;
-    private boolean status; // kalau buka url order, status berubah jadi true (total didapat dari loop
-                            // status false)
+    private boolean status;
+
 
     public String getId() {
         return id;
@@ -39,11 +30,11 @@ public class cart {
         this.kodeKeranjang = kodeKeranjang;
     }
 
-    public String getKodeProduk() {
+    public Long getKodeProduk() {
         return kodeProduk;
     }
 
-    public void setKodeProduk(String kodeProduk) {
+    public void setKodeProduk(Long kodeProduk) {
         this.kodeProduk = kodeProduk;
     }
 
@@ -53,6 +44,14 @@ public class cart {
 
     public void setJumlahBarang(Integer jumlahBarang) {
         this.jumlahBarang = jumlahBarang;
+    }
+
+    public double getHargaBarang() {
+        return hargaBarang;
+    }
+
+    public void setHargaBarang(double hargaBarang) {
+        this.hargaBarang = hargaBarang;
     }
 
     public double getSubtotal() {

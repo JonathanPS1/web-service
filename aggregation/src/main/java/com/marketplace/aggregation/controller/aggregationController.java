@@ -315,6 +315,7 @@ public class aggregationController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal menambahkan cart");
             }
         } catch (Exception ex) {
+            System.out.println(ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
         }
     }
