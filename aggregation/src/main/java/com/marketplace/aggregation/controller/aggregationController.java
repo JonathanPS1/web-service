@@ -22,7 +22,7 @@ public class aggregationController {
 
     private final String customerServiceUrl = "http://localhost:8081/customer";
     private final String productServiceUrl = "http://localhost:8082/product";
-    private final String orderServiceUrl = "http://localhost:8083/order";
+    private final String orderServiceUrl = "http://localhost:8083/transactions/order";
 
     @Autowired
     private RestTemplate restTemplate;
