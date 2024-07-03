@@ -14,8 +14,8 @@ public interface orderRepository extends MongoRepository<order, String> {
 
     public void deleteByKodeTransaksi(String kodeTransaksi);
 
-    @Query("{'kodePelanggan' : ?0 }") // ?0 indeks parameter pertama
-    List<order> findByPelanggan(String kodePelanggan);
+    @Query("{'kodeCustomer' : ?0 }") // ?0 indeks parameter pertama
+    List<order> findByPelanggan(Integer kodeCustomer);
 
     @Query("{'tanggalPembelian' : ?0 }")
     List<order> findByTglPembelian(String tanggalPembelian);

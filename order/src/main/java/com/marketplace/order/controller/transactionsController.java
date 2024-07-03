@@ -106,12 +106,12 @@ public class transactionsController {
         }
     }
 
-    @PostMapping("/getpelanggan/{kodePelanggan}")
-    public @ResponseBody Iterable<order> getPelanggan(@PathVariable String kodePelanggan) {
-        return or.findByPelanggan(kodePelanggan);
+    @GetMapping("/getpelanggan/{kodeCustomer}")
+    public @ResponseBody Iterable<order> getPelanggan(@PathVariable Integer kodeCustomer) {
+        return or.findByPelanggan(kodeCustomer);
     }
 
-    @PostMapping("/gettransaksi{tanggalPembelian}")
+    @GetMapping("/gettransaksi/{tanggalPembelian}")
     public @ResponseBody Iterable<order> getTransaksi(@PathVariable String tanggalPembelian) {
         return or.findByTglPembelian(tanggalPembelian);
     }
