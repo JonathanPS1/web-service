@@ -183,6 +183,8 @@ public class aggregationController {
         }
     }
 
+
+
     // Endpoint untuk mendapatkan semua orders
     @GetMapping("/order")
     public ResponseEntity<Object> getAllOrders() {
@@ -193,6 +195,63 @@ public class aggregationController {
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal mengambil data orders");
             }
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+        }
+    }
+
+    @GetMapping("/getpelanggan/{kodePelanggan}")
+    public ResponseEntity<Object> getPelanggan(@PathVariable String kodePelanggan) {
+        try {
+            ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/getpelanggan/{kodePelanggan}",
+                    Object.class, kodePelanggan);
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return ResponseEntity.ok(response.getBody());
+            } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Pelanggan Tidak Ditemukan");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal mengambil data pelanggan");
+            }
+        } catch (HttpClientErrorException.NotFound ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Pelanggan Tidak Ditemukan");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+        }
+    }
+
+    @GetMapping("/gettransaksi{tanggalPembelian}")
+    public ResponseEntity<Object> getTransaksi(@PathVariable String tanggalPembelian) {
+        try {
+            ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/gettransaksi{tanggalPembelian}",
+                    Object.class, tanggalPembelian);
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return ResponseEntity.ok(response.getBody());
+            } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Transaksi Tidak Ditemukan");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal mengambil data transaksi");
+            }
+        } catch (HttpClientErrorException.NotFound ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Transaksi Tidak Ditemukan");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
+        }
+    }
+
+    @GetMapping("/order/{kodeTansaksi}")
+    public ResponseEntity<Object> getOrderDetails(@PathVariable String kodeTransaksi) {
+        try {
+            ResponseEntity<Object> response = restTemplate.getForEntity(orderServiceUrl + "/order/{kodeTransaksi}",
+                    Object.class, kodeTransaksi);
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return ResponseEntity.ok(response.getBody());
+            } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Order Tidak Ditemukan");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal mengambil data order");
+            }
+        } catch (HttpClientErrorException.NotFound ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data Order Tidak Ditemukan");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gagal memproses permintaan");
         }

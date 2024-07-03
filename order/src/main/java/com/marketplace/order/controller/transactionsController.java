@@ -107,13 +107,13 @@ public class transactionsController {
         }
     }
 
-    @PostMapping("/getpelanggan")
-    public @ResponseBody Iterable<order> getPelanggan(@RequestParam String kodePelanggan) {
+    @PostMapping("/getpelanggan/{kodePelanggan}")
+    public @ResponseBody Iterable<order> getPelanggan(@PathVariable String kodePelanggan) {
         return or.findByPelanggan(kodePelanggan);
     }
 
-    @PostMapping("/gettransaksi")
-    public @ResponseBody Iterable<order> getTransaksi(@RequestParam String tanggalPembelian) {
+    @PostMapping("/gettransaksi{tanggalPembelian}")
+    public @ResponseBody Iterable<order> getTransaksi(@PathVariable String tanggalPembelian) {
         return or.findByTglPembelian(tanggalPembelian);
     }
 
